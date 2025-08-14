@@ -1,7 +1,7 @@
 
 ---
 
-# **IoT Air Quality Monitoring System — **
+# IoT Air Quality Monitoring System 
 
 ## **1. Overview**
 
