@@ -1,0 +1,235 @@
+[
+    {
+        "id": "359ad86cce3ac582",
+        "type": "tab",
+        "label": "Air Quality Monitoring ",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "mqtt_in_all",
+        "type": "mqtt in",
+        "z": "359ad86cce3ac582",
+        "name": "HiveMQ Air Quality",
+        "topic": "city/airquality/#",
+        "qos": "0",
+        "datatype": "auto",
+        "broker": "43c70cfe35b6b8fa",
+        "nl": false,
+        "rap": false,
+        "inputs": 0,
+        "x": 270,
+        "y": 300,
+        "wires": [
+            [
+                "json_parse_all"
+            ]
+        ]
+    },
+    {
+        "id": "json_parse_all",
+        "type": "json",
+        "z": "359ad86cce3ac582",
+        "name": "Parse JSON",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 490,
+        "y": 300,
+        "wires": [
+            [
+                "temp_gauge",
+                "humidity_gauge",
+                "co2_gauge",
+                "pm25_gauge",
+                "map_payload"
+            ]
+        ]
+    },
+    {
+        "id": "temp_gauge",
+        "type": "ui_gauge",
+        "z": "359ad86cce3ac582",
+        "name": "Temperature Gauge",
+        "group": "group1",
+        "order": 1,
+        "title": "Temperature (°C)",
+        "label": "°C",
+        "format": "{{payload.temperature}}",
+        "min": 0,
+        "max": 50,
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "x": 770,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "humidity_gauge",
+        "type": "ui_gauge",
+        "z": "359ad86cce3ac582",
+        "name": "Humidity Gauge",
+        "group": "group1",
+        "order": 2,
+        "title": "Humidity (%)",
+        "label": "%",
+        "format": "{{payload.humidity}}",
+        "min": 0,
+        "max": 100,
+        "colors": [
+            "#00b5ff",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "x": 770,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "co2_gauge",
+        "type": "ui_gauge",
+        "z": "359ad86cce3ac582",
+        "name": "CO₂ Gauge",
+        "group": "group1",
+        "order": 3,
+        "title": "CO₂ (ppm)",
+        "label": "ppm",
+        "format": "{{payload.co2}}",
+        "min": 0,
+        "max": 2000,
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "x": 770,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "pm25_gauge",
+        "type": "ui_gauge",
+        "z": "359ad86cce3ac582",
+        "name": "PM2.5 Gauge",
+        "group": "group1",
+        "order": 4,
+        "title": "PM2.5 (µg/m³)",
+        "label": "µg/m³",
+        "format": "{{payload.pm25}}",
+        "min": 0,
+        "max": 200,
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "x": 770,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "map_payload",
+        "type": "function",
+        "z": "359ad86cce3ac582",
+        "name": "Build Map Marker (Auto-Expire)",
+        "func": "// Build pollution map marker with auto-expire\nlet pm25 = msg.payload.pm25;\nlet color = \"green\";\nif (pm25 > 100) color = \"red\";\nelse if (pm25 > 50) color = \"orange\";\n\nlet size = Math.min(20, Math.max(5, pm25 / 10 + 5));\nlet markerId = msg.payload.location || `${msg.payload.lat},${msg.payload.lon}`;\n\nmsg.payload = {\n    name: markerId,\n    lat: msg.payload.lat,\n    lon: msg.payload.lon,\n    icon: \"circle\",\n    iconColor: color,\n    iconSize: size,\n    popup: `<b>${msg.payload.location || \"N/A\"}</b><br>` +\n           `Temp: ${msg.payload.temperature} °C<br>` +\n           `Humidity: ${msg.payload.humidity} %<br>` +\n           `CO₂: ${msg.payload.co2} ppm<br>` +\n           `PM2.5: ${pm25} µg/m³`,\n    layer: \"Air Sensors\",\n    type: \"marker\",\n    ttl: 120 // seconds before auto-delete\n};\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 770,
+        "y": 400,
+        "wires": [
+            [
+                "ui_worldmap"
+            ]
+        ]
+    },
+    {
+        "id": "ui_worldmap",
+        "type": "ui_worldmap",
+        "z": "359ad86cce3ac582",
+        "group": "group1",
+        "order": 5,
+        "width": "12",
+        "height": "8",
+        "name": "Pollution Map",
+        "lat": "20.5937",
+        "lon": "78.9629",
+        "zoom": "5",
+        "layer": "OSMG",
+        "cluster": "",
+        "maxage": "",
+        "usermenu": "show",
+        "layers": "show",
+        "panit": "true",
+        "panlock": "false",
+        "zoomlock": "false",
+        "hiderightclick": "false",
+        "coords": "none",
+        "path": "/worldmap",
+        "overlist": "DR,CO,RA,DN,HM",
+        "maplist": "OSMG,OSMC,EsriC,EsriS,EsriT,EsriO,EsriDG,NatGeo,UKOS,OpTop",
+        "mapname": "",
+        "mapurl": "",
+        "mapopt": "",
+        "mapwms": false,
+        "x": 990,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "43c70cfe35b6b8fa",
+        "type": "mqtt-broker",
+        "name": "HiveMQ Public Broker",
+        "broker": "broker.hivemq.com",
+        "port": "1883",
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": "4",
+        "keepalive": "60",
+        "cleansession": true,
+        "autoUnsubscribe": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    },
+    {
+        "id": "group1",
+        "type": "ui_group",
+        "name": "Air Quality",
+        "tab": "tab1",
+        "order": 1,
+        "width": "12",
+        "collapse": false
+    },
+    {
+        "id": "tab1",
+        "type": "ui_tab",
+        "name": "Air Quality Monitor",
+        "icon": "dashboard",
+        "order": 1
+    },
+    {
+        "id": "5e56ca64e4273af0",
+        "type": "global-config",
+        "env": [],
+        "modules": {
+            "node-red-dashboard": "3.6.6",
+            "node-red-contrib-web-worldmap": "5.5.1"
+        }
+    }
+]

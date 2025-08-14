@@ -1,0 +1,61 @@
+{
+  "version": 1,
+  "author": "JOSAIAH MURFEAL DKHAR 2447125 - Single Node",
+  "editor": "wokwi",
+  "parts": [
+    { "type": "wokwi-esp32-devkit-v1", "id": "esp", "top": 0, "left": 0, "attrs": {} },
+    { "type": "wokwi-dht22", "id": "dht1", "top": -153.3, "left": 23.4, "attrs": {} },
+    {
+      "type": "wokwi-analog-joystick",
+      "id": "co_sensor",
+      "top": -124.8,
+      "left": 230.4,
+      "attrs": { "name": "CO Sensor" }
+    },
+    {
+      "type": "wokwi-analog-joystick",
+      "id": "co2_sensor",
+      "top": -67.2,
+      "left": 316.8,
+      "attrs": { "name": "CO2 Sensor" }
+    },
+    {
+      "type": "wokwi-analog-joystick",
+      "id": "pm25_sensor",
+      "top": -9.6,
+      "left": 230.4,
+      "attrs": { "name": "PM2.5 Sensor" }
+    },
+    { "type": "wokwi-led", "id": "led1", "top": 236.4, "left": 23, "attrs": { "color": "red" } },
+    {
+      "type": "wokwi-resistor",
+      "id": "r1",
+      "top": 153.6,
+      "left": 86.4,
+      "attrs": { "value": "220" }
+    }
+  ],
+  "connections": [
+    [ "esp:TX0", "$serialMonitor:RX", "", [] ],
+    [ "esp:RX0", "$serialMonitor:TX", "", [] ],
+    [ "dht1:VCC", "esp:3V3", "red", [ "h0" ] ],
+    [ "dht1:GND", "esp:GND.1", "black", [ "h0" ] ],
+    [ "dht1:SDA", "esp:D14", "green", [ "h0" ] ],
+    [ "co_sensor:VCC", "esp:3V3", "red", [ "h0" ] ],
+    [ "co_sensor:GND", "esp:GND.2", "black", [ "h0" ] ],
+    [ "co_sensor:VERT", "esp:A0", "blue", [ "h0" ] ],
+    [ "co2_sensor:VCC", "esp:3V3", "red", [ "h0" ] ],
+    [ "co2_sensor:GND", "esp:GND.2", "black", [ "h0" ] ],
+    [ "co2_sensor:VERT", "esp:A3", "blue", [ "h0" ] ],
+    [ "pm25_sensor:VCC", "esp:3V3", "red", [ "h0" ] ],
+    [ "pm25_sensor:GND", "esp:GND.2", "black", [ "h0" ] ],
+    [ "pm25_sensor:VERT", "esp:A6", "blue", [ "h0" ] ],
+    [ "led1:A", "esp:D2", "green", [ "h0" ] ],
+    [ "led1:C", "r1:1", "", [ "h0" ] ],
+    [ "r1:2", "esp:GND.1", "black", [ "h0" ] ]
+  ],
+  "dependencies": {}
+}
+
+
+
